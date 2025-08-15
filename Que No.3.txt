@@ -1,0 +1,105 @@
+Consider the following tables:Employee (Emp_no, Name, Emp_city)Company (Emp_no,
+Company_name, Salary)
+i.Write a SQL query to display Employeename and company name.
+ii.Write a SQL query to display employeename, employee city ,company name andsalary
+of all the employees whose salary>10000
+iii.Write a query to display all the employees working in “XYZ company
+
+
+Microsoft Windows [Version 10.0.26100.4652]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Program Files\MySQL\MySQL Server 9.3\bin>mysql -h localhost -u root -p
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 78
+Server version: 9.3.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database demo;
+Query OK, 1 row affected (0.291 sec)
+
+mysql> use demo;
+Database changed
+mysql> create table Employee(Emp_no int,Name varchar(50),Emp_city varchar(30));
+Query OK, 0 rows affected (0.475 sec)
+
+mysql> create table company(Emp_no int,Company_name varchar(20), Salary int);
+Query OK, 0 rows affected (0.399 sec)
+
+mysql> insert into Employee(Emp_no,Name,Emp_city) values(1,'Mohit','Pune'),(2,'Somnath','Nashik'),(3,'Era','Hydrabad'),(4,'Rudra','Mumbai'),(5,'Akira','chennai');
+Query OK, 5 rows affected (0.288 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into company(Emp_no,company_name, salary) values(1,'Metamorposis',90000),(2,'Amezon',50000),(3,'Linde',80000),(4,'Microsoft',100000),(5,'Wipro',75000);
+Query OK, 5 rows affected (0.257 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Employee;
++--------+---------+----------+
+| Emp_no | Name    | Emp_city |
++--------+---------+----------+
+|      1 | Mohit   | Pune     |
+|      2 | Somnath | Nashik   |
+|      3 | Era     | Hydrabad |
+|      4 | Rudra   | Mumbai   |
+|      5 | Akira   | chennai  |
++--------+---------+----------+
+5 rows in set (0.017 sec)
+
+mysql> select * from company;
++--------+--------------+--------+
+| Emp_no | Company_name | Salary |
++--------+--------------+--------+
+|      1 | Metamorposis |  90000 |
+|      2 | Amezon       |  50000 |
+|      3 | Linde        |  80000 |
+|      4 | Microsoft    | 100000 |
+|      5 | Wipro        |  75000 |
++--------+--------------+--------+
+5 rows in set (0.011 sec)
+
+mysql> select name.e,company_name.c FROM name JOIN company_name WHERE e.Emp_no=c.Emp_no;
+ERROR 1146 (42S02): Table 'demo.name' doesn't exist
+
+mysql> select e.name,c.company_name from Employee e,Company c Where e.Emp_no=c.Emp_no;
++---------+--------------+
+| name    | company_name |
++---------+--------------+
+| Mohit   | Metamorposis |
+| Somnath | Amezon       |
+| Era     | Linde        |
+| Rudra   | Microsoft    |
+| Akira   | Wipro        |
++---------+--------------+
+5 rows in set (0.221 sec)
+
+mysql> select e.name as Employee_name,e.Emp_city as Employeecity,c.company_name as company_Name, c.Salary from Employee e Join company c ON e.Emp_no = c.Emp_no WHERE c.Salary > 10000;
++---------------+--------------+--------------+--------+
+| Employee_name | Employeecity | company_Name | Salary |
++---------------+--------------+--------------+--------+
+| Mohit         | Pune         | Metamorposis |  90000 |
+| Somnath       | Nashik       | Amezon       |  50000 |
+| Era           | Hydrabad     | Linde        |  80000 |
+| Rudra         | Mumbai       | Microsoft    | 100000 |
+| Akira         | chennai      | Wipro        |  75000 |
++---------------+--------------+--------------+--------+
+5 rows in set (0.017 sec)
+
+mysql> select Name AS Employee_Name, e.Emp_city AS City from Employee where Emp_no in(select Emp_no from company where company_name='Microsoft');
+ERROR 1054 (42S22): Unknown column 'e.Emp_city' in 'field list'
+
+mysql> select Name AS Employee_Name, Emp_city AS City from Employee where Emp_no in(select Emp_no from company where company_name='Microsoft');
++---------------+--------+
+| Employee_Name | City   |
++---------------+--------+
+| Rudra         | Mumbai |
++---------------+--------+
+1 row in set (0.019 sec)
