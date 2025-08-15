@@ -1,0 +1,160 @@
+Microsoft Windows [Version 10.0.26100.4652]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Program Files\MySQL\MySQL Server 9.3\bin>mysql -h localhost -u root -p
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 77
+Server version: 9.3.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database airport;
+Query OK, 1 row affected (0.259 sec)
+
+mysql> use airport;
+Database changed
+mysql> create table pilot(pid int,pname varchar(20));
+Query OK, 0 rows affected (0.405 sec)
+
+mysql> create table flight(fid int,ftype varchar(20),capacity int);
+Query OK, 0 rows affected (0.358 sec)
+
+mysql> create table route(pid int ,fid int,from_city varchar(30),to_city varchar(30));
+Query OK, 0 rows affected (0.325 sec)
+
+mysql> insert into pilot(pid,pname) values(1,'Roman Jha'),(2,'Mohit Agarwal'),(3,'Sankalp Mishra');
+Query OK, 3 rows affected (0.228 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> insert into flight(fid,ftype,capacity) values(101,'Air India 256',500),(102,'Indigo 412',450),(103,'Emirates 210',350);
+Query OK, 3 rows affected (0.260 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> insert into route(pid,fid, from_city, to_city) values(1,101,'Dheradun','Mumbai'),(2,102,'Pune','Nanded'),(3,103,'Chennai','london');
+Query OK, 3 rows affected (0.238 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from flight where capacity > 300;
++------+---------------+----------+
+| fid  | ftype         | capacity |
++------+---------------+----------+
+|  101 | Air India 256 |      500 |
+|  102 | Indigo 412    |      450 |
+|  103 | Emirates 210  |      350 |
++------+---------------+----------+
+3 rows in set (0.010 sec)
+
+mysql> select * from route;
++------+------+-----------+---------+
+| pid  | fid  | from_city | to_city |
++------+------+-----------+---------+
+|    1 |  101 | Dheradun  | Mumbai  |
+|    2 |  102 | Pune      | Nanded  |
+|    3 |  103 | Chennai   | london  |
+|    4 |  104 | Surat     | Mumbai  |
+|    5 |  105 | Surat     | Mumbai  |
++------+------+-----------+---------+
+5 rows in set (0.014 sec)
+
+mysql> select * from route where from_city='surat' and to_city='mumbai';
++------+------+-----------+---------+
+| pid  | fid  | from_city | to_city |
++------+------+-----------+---------+
+|    4 |  104 | Surat     | Mumbai  |
+|    5 |  105 | Surat     | Mumbai  |
++------+------+-----------+---------+
+2 rows in set (0.013 sec)
+
+mysql> select * from pilot;
++------+----------------+
+| pid  | pname          |
++------+----------------+
+|    1 | Roman Jha      |
+|    2 | Mohit Agarwal  |
+|    3 | Sankalp Mishra |
++------+----------------+
+3 rows in set (0.014 sec)
+
+mysql> select pname from pilot where pid in(select pid from routr where from_city='pune');
+ERROR 1146 (42S02): Table 'airport.routr' doesn't exist
+mysql> select pname from pilot where pid in(select pid from route where from_city='pune');
++---------------+
+| pname         |
++---------------+
+| Mohit Agarwal |
++---------------+
+1 row in set (0.228 sec)
+
+mysql> insert into pilot(pid,pname) values(4,'Adaam'),(5,'Alexander');
+Query OK, 2 rows affected (0.095 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from pilot;
++------+----------------+
+| pid  | pname          |
++------+----------------+
+|    1 | Roman Jha      |
+|    2 | Mohit Agarwal  |
+|    3 | Sankalp Mishra |
+|    4 | Adaam          |
+|    5 | Alexander      |
++------+----------------+
+5 rows in set (0.015 sec)
+
+mysql> select * from pilot where pname like 'A%' and pname not like '%A';
++------+-----------+
+| pid  | pname     |
++------+-----------+
+|    4 | Adaam     |
+|    5 | Alexander |
++------+-----------+
+2 rows in set (0.251 sec)
+
+mysql> insert into pilot(pid,pname) values(6,'Mr.Kapoor');
+Query OK, 1 row affected (0.246 sec)
+
+mysql> insert into route(pid,fid,from_city,to_city) values(6,106,'Kashmir','Dubai');
+Query OK, 1 row affected (0.057 sec)
+
+mysql> select * from pilot;
++------+----------------+
+| pid  | pname          |
++------+----------------+
+|    1 | Roman Jha      |
+|    2 | Mohit Agarwal  |
+|    3 | Sankalp Mishra |
+|    4 | Adaam          |
+|    5 | Alexander      |
+|    6 | Mr.Kapoor      |
++------+----------------+
+6 rows in set (0.018 sec)
+
+mysql> select * from route;
++------+------+-----------+---------+
+| pid  | fid  | from_city | to_city |
++------+------+-----------+---------+
+|    1 |  101 | Dheradun  | Mumbai  |
+|    2 |  102 | Pune      | Nanded  |
+|    3 |  103 | Chennai   | london  |
+|    4 |  104 | Surat     | Mumbai  |
+|    5 |  105 | Surat     | Mumbai  |
+|    6 |  106 | Kashmir   | Dubai   |
++------+------+-----------+---------+
+6 rows in set (0.015 sec)
+
+mysql> select * from route where pname='Mr.Kapoor';
+ERROR 1054 (42S22): Unknown column 'pname' in 'where clause'
+mysql> select * from route where pid=(select pid from pilot where pname='Mr.kapoor');
++------+------+-----------+---------+
+| pid  | fid  | from_city | to_city |
++------+------+-----------+---------+
+|    6 |  106 | Kashmir   | Dubai   |
++------+------+-----------+---------+
+1 row in set (0.020 sec)
