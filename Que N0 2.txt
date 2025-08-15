@@ -1,3 +1,14 @@
+Write SQL statement for the following (any five)
+Consider the following database
+pilot(pid, pname)
+flight(fid, ftype, capacity)
+route(pid, fid, from_city, to_city)
+i) List the details of flights having capacity more than 300 
+ii) List the flights between ‘Surat’ and ‘Mumbai’
+iii) List the names of pilots who fly from ‘Pune’
+iv) List the route on which , pilot ‘Mr Kapoor ’ flies
+v) List the pilots whose names . starts with letter ‘A %’ but does not end with letter ‘A’
+
 Microsoft Windows [Version 10.0.26100.4652]
 (c) Microsoft Corporation. All rights reserved.
 
@@ -157,4 +168,5 @@ mysql> select * from route where pid=(select pid from pilot where pname='Mr.kapo
 +------+------+-----------+---------+
 |    6 |  106 | Kashmir   | Dubai   |
 +------+------+-----------+---------+
+
 1 row in set (0.020 sec)
