@@ -1,0 +1,70 @@
+ Consider relational schema Employee (Empno, Ename, DeptNo, Salary),
+Department(DeptNo, Dname) Write SQL Queries for following questions (any two)
+i) List Employee Names of Computer Department
+ii) Find average salary of each department
+
+Microsoft Windows [Version 10.0.26100.4652]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Program Files\MySQL\MySQL Server 9.3\bin>mysql -h localhost -u root -p
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 94
+Server version: 9.3.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database Company;
+Query OK, 1 row affected (0.315 sec)
+
+mysql> use company;
+Database changed
+mysql> create table Department (DeptNo int primary key,Dname varchar(30));
+Query OK, 0 rows affected (0.504 sec)
+
+mysql> create table Employee (Empno int primary key,Ename varchar(30),DeptNo int,Salary numeric(10,2),foreign key (DeptNo) references Department(DeptNo));
+Query OK, 0 rows affected (1.044 sec)
+
+mysql> insert into Department values(1, 'DBMS'),(2, 'IOT'),^C
+mysql> insert into Department values(1, 'DBMS'),(2, 'IOT'),3, 'Physics');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '3, 'Physics')' at line 1
+mysql>
+mysql> insert into Department values(1, 'DBMS'),(2, 'IOT'),(3, 'Physics');
+Query OK, 3 rows affected (0.273 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> insert into Employee values(101, 'Shobha', 1, 70000),(102, 'Rishikesh', 1, 65000),(103, 'Saurabh', 2, 60000);
+Query OK, 3 rows affected (0.280 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> update Employee set Salary = Salary * 1.10 where DeptNo = (select DeptNo from Department where Dname = 'Computer');
+Query OK, 0 rows affected (0.267 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> select * Department;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Department' at line 1
+mysql> select * from Department;
++--------+---------+
+| DeptNo | Dname   |
++--------+---------+
+|      1 | DBMS    |
+|      2 | IOT     |
+|      3 | Physics |
++--------+---------+
+3 rows in set (0.009 sec)
+
+mysql> select * from Employee;
++-------+-----------+--------+----------+
+| Empno | Ename     | DeptNo | Salary   |
++-------+-----------+--------+----------+
+|   101 | Shobha    |      1 | 70000.00 |
+|   102 | Rishikesh |      1 | 65000.00 |
+|   103 | Saurabh   |      2 | 60000.00 |
++-------+-----------+--------+----------+
+3 rows in set (0.007 sec)
