@@ -1,0 +1,67 @@
+Consider following database Cricket_play(p_id, Name, Address) Matches(Match_code,
+match_date, match_place) Score(p_id, match_code, score) Write following queries in SQL
+i) List player name, match_date, match_place, and score of each player
+4
+ii) List all those players, whose maximum score is higher than 50 10 Explain Procedure in
+PL-SQL with suitable Example
+
+
+Microsoft Windows [Version 10.0.26100.4652]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Program Files\MySQL\MySQL Server 9.3\bin>mysql -h localhost -u root -p
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 86
+Server version: 9.3.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database cricket;
+Query OK, 1 row affected (0.310 sec)
+
+mysql> use cricket;
+Database changed
+mysql> create table Cricket_play (p_id int primary key, Name varchar(30), Address varchar(50));
+Query OK, 0 rows affected (0.247 sec)
+
+mysql> create table Matches (Match_code int primary key,match_date date,match_place varchar(50));
+Query OK, 0 rows affected (0.168 sec)
+
+mysql> create table Score (p_id int,match_code int,score int,primary key(p_id, match_code),foreign key (p_id) references Cricket_play(p_id),foreign key (match_code) references Matches(Match_code));
+Query OK, 0 rows affected (0.642 sec)
+
+mysql> insert into Cricket_play values(101,'Manish','Mumbai'),(102,'Shivam','Pune'),(103,'Ishaan','Hydrabad');
+Query OK, 3 rows affected (0.260 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> insert into Matches values(201, '2025-08-01', 'Mumbai'),(202, '2025-08-03', 'Pune'),(203, '2025-08-05', 'Hydrabad');
+Query OK, 3 rows affected (0.285 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> insert into Score values(101, 202, 70),(101, 201, 60),(102, 203, 55),(103, 202, 70),(103, 203, 40);
+Query OK, 5 rows affected (0.249 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql>  select c.Name, m.match_date, m.match_place, s.score
+    -> ;
+ERROR 1109 (42S02): Unknown table 'c' in field list
+mysql> select c.Name, m.match_date, m.match_place, s.score  from Cricket_play c join Score s on c.p_id = s.p_id  join Matches m on s.match_code = m.Match_code;
++--------+------------+-------------+-------+
+| Name   | match_date | match_place | score |
++--------+------------+-------------+-------+
+| Manish | 2025-08-01 | Mumbai      |    60 |
+| Manish | 2025-08-03 | Pune        |    70 |
+| Shivam | 2025-08-05 | Hydrabad    |    55 |
+| Ishaan | 2025-08-03 | Pune        |    70 |
+| Ishaan | 2025-08-05 | Hydrabad    |    40 |
++--------+------------+-------------+-------+
+5 rows in set (0.025 sec)
+
+mysql>
