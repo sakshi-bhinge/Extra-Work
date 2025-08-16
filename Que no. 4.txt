@@ -1,0 +1,135 @@
+Consider the following relational schemaEmployee
+(empno,name,office,age)Books(isbn,title,authors,publisher)Loan(empno, isbn,date)
+Write the following queries in relational algebra.
+a.Find the names of employees who have borrowed a book Published byMcGraw-Hill.
+b.Find the names of employees who have borrowed all books Published byMcGraw-Hill.
+c.Find the names of employees who have borrowed more than five different books
+published by McGraw-Hill.
+d.For each publisher, find the names of employees who have borrowed more than five
+books of that publisher
+
+Microsoft Windows [Version 10.0.26100.4652]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Program Files\MySQL\MySQL Server 9.3\bin>mysql -h localhost -u root -p
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 84
+Server version: 9.3.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database stationary;
+Query OK, 1 row affected (0.688 sec)
+
+mysql> use stationary;
+Database changed
+mysql> create table schemaEmployee(empno int,name varchar(20),office varchar(30),age int);
+Query OK, 0 rows affected (1.313 sec)
+
+mysql> create table Loan(empno int, isbn int,date date);
+Query OK, 0 rows affected (0.309 sec)
+
+mysql> create table Books(isbn int ,title varchar(20),authors varchar(20),publisher varchar(20));
+Query OK, 0 rows affected (0.290 sec)
+
+mysql> insert into schemaEmployee(empno ,name, office, age) values(1,'Erica','Mumbai',27),(2,'Isha','Banglore',30),(3,'Ashok','Delhi',35),(4,'Kiran','Pune',25);
+Query OK, 4 rows affected (0.314 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into books(isbn,title,authors,publisher) values(101,'Programimg language','Silberschatz','McGraw-Hill'),(102, 'Data Structures', 'Seymour', 'McGraw-Hill'),(103,'Java Programming', 'Deitel', 'Pearson'),(104,'Operating Systems', 'Silberschatz', 'Pearson'),(105,'Networking', 'Tanenbaum', 'McGraw-Hill'),(106,'Python Basics', 'Guido', 'McGraw-Hill'),(107,'AI Fundamentals', 'Russell', 'Pearson'),(108,'Algorithms', 'Cormen', 'McGraw-Hill');
+Query OK, 8 rows affected (0.063 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> insert into loan(empno, isbn, date) VALUES  (1, 101, '2025-08-01'), (1, 102, '2025-08-02'), (2, 101, '2025-08-01'), (2, 102, '2025-08-03'), (3, 103, '2025-08-02'),(3, 105, '2025-08-04'), (4, 104, '2025-08-05');
+Query OK, 7 rows affected (0.237 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> desc schmaEmployee;
+ERROR 1146 (42S02): Table 'stationary.schmaemployee' doesn't exist
+mysql> desc schemaEmployee;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| empno  | int         | YES  |     | NULL    |       |
+| name   | varchar(20) | YES  |     | NULL    |       |
+| office | varchar(30) | YES  |     | NULL    |       |
+| age    | int         | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+4 rows in set (0.214 sec)
+
+mysql> desc books;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| isbn      | int         | YES  |     | NULL    |       |
+| title     | varchar(20) | YES  |     | NULL    |       |
+| authors   | varchar(20) | YES  |     | NULL    |       |
+| publisher | varchar(20) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.020 sec)
+
+mysql> select * from schemaEmployee;
++-------+-------+----------+------+
+| empno | name  | office   | age  |
++-------+-------+----------+------+
+|     1 | Erica | Mumbai   |   27 |
+|     2 | Isha  | Banglore |   30 |
+|     3 | Ashok | Delhi    |   35 |
+|     4 | Kiran | Pune     |   25 |
++-------+-------+----------+------+
+4 rows in set (0.005 sec)
+
+mysql> select * from Books;
++------+---------------------+--------------+-------------+
+| isbn | title               | authors      | publisher   |
++------+---------------------+--------------+-------------+
+|  101 | Programimg language | Silberschatz | McGraw-Hill |
+|  102 | Data Structures     | Seymour      | McGraw-Hill |
+|  103 | Java Programming    | Deitel       | Pearson     |
+|  104 | Operating Systems   | Silberschatz | Pearson     |
+|  105 | Networking          | Tanenbaum    | McGraw-Hill |
+|  106 | Python Basics       | Guido        | McGraw-Hill |
+|  107 | AI Fundamentals     | Russell      | Pearson     |
+|  108 | Algorithms          | Cormen       | McGraw-Hill |
++------+---------------------+--------------+-------------+
+8 rows in set (0.009 sec)
+
+mysql> select * from loan;
++-------+------+------------+
+| empno | isbn | date       |
++-------+------+------------+
+|     1 |  101 | 2025-08-01 |
+|     1 |  102 | 2025-08-02 |
+|     2 |  101 | 2025-08-01 |
+|     2 |  102 | 2025-08-03 |
+|     3 |  103 | 2025-08-02 |
+|     3 |  105 | 2025-08-04 |
+|     4 |  104 | 2025-08-05 |
++-------+------+------------+
+7 rows in set (0.008 sec)
+
+mysql> select distinct e.name from schemaemployee e join loan l on e.empno=l.empno join books b on l.isbn=b.isbn where b.publisher='McGraw-Hill';
++-------+
+| name  |
++-------+
+| Erica |
+| Isha  |
+| Ashok |
++-------+
+3 rows in set (0.028 sec)
+
+mysql> select e.name from schemaemployee e where not exists (select 1 from books b where b.publisher='McGraw-Hill' and not exists (select 1 from loan l where l.empno=e.empno and l.isbn=b.isbn));
+Empty set (0.027 sec)
+
+mysql> select e.name from schemaemployee e join loan l on e.empno=l.empno join books b on l.isbn=b.isbn where b.publisher='McGraw-Hill' group by e.empno, e.name having count(distinct b.isbn)>5;
+Empty set (0.068 sec)
+
+mysql> select b.publisher, e.name from schemaemployee e join loan l on e.empno=l.empno join books b on l.isbn=b.isbn group by b.publisher, e.empno, e.name having count(l.isbn)>5;
+Empty set (0.034 sec)
